@@ -4,14 +4,14 @@ import User from "./User";
 const taskSchema = new Schema({
     user: {
         type: Types.ObjectId,
-        ref: 'User',
+        ref: 'Task',
         required: true,
         validate: [{
             validator: async (value: Types.ObjectId) => {
                 const user = await User.findById(value);
                 return !!user;
             },
-            message: "User not found",
+            message: "Task not found",
         }]
     },
     title: {
