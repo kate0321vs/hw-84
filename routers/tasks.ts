@@ -76,7 +76,6 @@ tasksRouter.patch("/:id", auth, async (req, res, next) => {
 tasksRouter.delete("/:id", auth, async (req, res) => {
     const user = (req as RequestWithUser).user;
     const task = await Task.findOne({_id: req.params.id});
-    console.log('task')
     if (!task) {
         res.status(404).send({error: "Task not found"});
         return;
