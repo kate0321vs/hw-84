@@ -2,13 +2,20 @@ import express from "express";
 import auth, {RequestWithUser} from "../middleware/auth";
 import Task from "../models/Task";
 import mongoose from "mongoose";
+import {ITask} from "../types";
 
 const tasksRouter = express.Router();
 
 tasksRouter.post('/', auth, async (req, res, next) => {
     try {
         const user = (req as RequestWithUser).user;
-        const newTask = new Task({
+
+        const statusArr = ["now", "done", "in_progress"];
+        if (!statusArr.includes(req.body.status)) {
+            res.status(400).send("Invalid status");
+            return;
+        }
+        const newTask = new Task<ITask>({
             user: user._id,
             title: req.body.title,
             description: req.body.description,
