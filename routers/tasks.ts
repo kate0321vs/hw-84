@@ -43,6 +43,51 @@ tasksRouter.get("/", auth, async (req, res) => {
     } catch(err) {
         res.status(500).send(err);
     }
+});
+
+tasksRouter.patch("/:id", auth, async (req, res, next) => {
+    try {
+        const user = (req as RequestWithUser).user;
+        const task = await Task.findOne({_id: req.params.id});
+        if (!task) {
+            res.status(404).send({error: "Task not found"});
+            return;
+        }
+
+        if (task.user.toString() !== user._id.toString()) {
+            res.status(403).send({error: "Not have permission to edit this note"});
+            return;
+        }
+
+        if (req.body.title !== undefined) task.title = req.body.title;
+        if (req.body.description !== undefined) task.description = req.body.description;
+        if (req.body.status !== undefined) task.status = req.body.status;
+
+        await task.save();
+        res.send(task)
+    } catch (err) {
+        if (err instanceof mongoose.Error.ValidationError) {
+            res.status(400).send({error: "Incorrect input data provided"});
+        }
+        next(err)
+    }
+});
+
+tasksRouter.delete("/:id", auth, async (req, res) => {
+    const user = (req as RequestWithUser).user;
+    const task = await Task.findOne({_id: req.params.id});
+    console.log('task')
+    if (!task) {
+        res.status(404).send({error: "Task not found"});
+        return;
+    }
+
+    if (task.user.toString() !== user._id.toString()) {
+        res.status(403).send({error: "Not have permission to delete this task"});
+        return;
+    }
+    await task.deleteOne();
+    res.send({message: "Task deleted"})
 })
 
 export default tasksRouter;

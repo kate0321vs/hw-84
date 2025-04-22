@@ -23,6 +23,7 @@ const taskSchema = new Schema({
         type: String,
         require: true
     }
+
 });
 
 const Task = model("Task", taskSchema);
