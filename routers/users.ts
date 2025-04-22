@@ -15,7 +15,7 @@ usersRouter.post("/", async (req, res, next) => {
         res.send(newUser);
     } catch(err) {
         if(err instanceof mongoose.Error.ValidationError) {
-            res.status(401).send(err);
+            res.status(400).send(err);
             return;
         }
         next(err);
@@ -32,7 +32,7 @@ usersRouter.post("/sessions", async (req, res, next) => {
 
         const isMatch = await user.checkPassword(req.body.password);
         if (!isMatch) {
-            res.status(401).send({error: "Wrong username or password"});
+            res.status(404).send({error: "Wrong username or password"});
             return;
         }
 

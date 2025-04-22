@@ -1,4 +1,4 @@
-import {Schema, Types} from "mongoose";
+import {model, Schema, Types} from "mongoose";
 import User from "./User";
 
 const taskSchema = new Schema({
@@ -23,4 +23,7 @@ const taskSchema = new Schema({
         type: String,
         require: true
     }
-})
+});
+
+const Task = model("Task", taskSchema);
+export default Task;
